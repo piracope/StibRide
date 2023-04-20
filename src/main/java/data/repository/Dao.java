@@ -19,7 +19,7 @@ public interface Dao<K, T extends Dto<K>> {
      * Inserts an element into the resource.
      *
      * @param item item to insert.
-     * @return the element's key, usefull when the key is auto-generated.
+     * @return the element's key, useful when the key is auto-generated.
      * @throws RepositoryException if the resource can't be accessed.
      */
     K insert(T item) throws RepositoryException;
