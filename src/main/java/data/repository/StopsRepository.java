@@ -1,6 +1,5 @@
 package data.repository;
 
-import data.dto.StationsDto;
 import data.dto.StopId;
 import data.dto.StopsDto;
 import data.exception.RepositoryException;
@@ -11,7 +10,7 @@ import java.util.List;
 public class StopsRepository implements Repository<StopId, StopsDto> {
     private final StopsDao dao;
 
-    public StopsRepository() throws RepositoryException{
+    public StopsRepository() throws RepositoryException {
         dao = StopsDao.getInstance();
     }
 
@@ -19,6 +18,7 @@ public class StopsRepository implements Repository<StopId, StopsDto> {
         this.dao = dao;
     }
 
+    /*
     @Override
     public StopId add(StopsDto item) throws RepositoryException {
         StopId key = item.getKey();
@@ -34,6 +34,18 @@ public class StopsRepository implements Repository<StopId, StopsDto> {
     @Override
     public void remove(StopId key) throws RepositoryException {
         dao.delete(key);
+    }
+
+     */
+
+    @Override
+    public StopId add(StopsDto item) throws RepositoryException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void remove(StopId key) throws RepositoryException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

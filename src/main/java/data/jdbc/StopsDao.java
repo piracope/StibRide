@@ -5,13 +5,10 @@ import data.dto.StopsDto;
 import data.exception.RepositoryException;
 import data.repository.Dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 public class StopsDao implements Dao<StopId, StopsDto> {
     private static StopsDao INSTANCE = null;
     private final Connection connexion;
@@ -21,10 +18,11 @@ public class StopsDao implements Dao<StopId, StopsDto> {
     }
 
     public static StopsDao getInstance() throws RepositoryException {
-        if(INSTANCE == null) INSTANCE = new StopsDao();
+        if (INSTANCE == null) INSTANCE = new StopsDao();
         return INSTANCE;
     }
 
+    /*
     @Override
     public StopId insert(StopsDto item) throws RepositoryException {
         if (item == null) {
@@ -79,6 +77,23 @@ public class StopsDao implements Dao<StopId, StopsDto> {
             throw new RepositoryException(e.getMessage());
         }
 
+    }
+
+     */
+
+    @Override
+    public StopId insert(StopsDto item) throws RepositoryException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void delete(StopId key) throws RepositoryException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void update(StopsDto item) throws RepositoryException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -4,11 +4,7 @@ import data.dto.StationsDto;
 import data.exception.RepositoryException;
 import data.repository.Dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +18,11 @@ public class StationsDao implements Dao<Integer, StationsDto> {
     }
 
     public static StationsDao getInstance() throws RepositoryException {
-        if(INSTANCE == null) INSTANCE = new StationsDao();
+        if (INSTANCE == null) INSTANCE = new StationsDao();
         return INSTANCE;
     }
 
+    /*
     @Override
     public Integer insert(StationsDto item) throws RepositoryException {
         if (item == null) {
@@ -78,6 +75,23 @@ public class StationsDao implements Dao<Integer, StationsDto> {
             throw new RepositoryException(e.getMessage());
         }
 
+    }
+
+     */
+
+    @Override
+    public Integer insert(StationsDto item) throws RepositoryException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void delete(Integer key) throws RepositoryException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void update(StationsDto item) throws RepositoryException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

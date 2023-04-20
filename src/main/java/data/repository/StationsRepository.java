@@ -17,6 +17,7 @@ public class StationsRepository implements Repository<Integer, StationsDto> {
         this.dao = dao;
     }
 
+    /*
     @Override
     public Integer add(StationsDto item) throws RepositoryException {
         Integer key = item.getKey();
@@ -32,6 +33,18 @@ public class StationsRepository implements Repository<Integer, StationsDto> {
     @Override
     public void remove(Integer key) throws RepositoryException {
         dao.delete(key);
+    }
+
+     */
+
+    @Override
+    public Integer add(StationsDto item) throws RepositoryException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void remove(Integer key) throws RepositoryException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

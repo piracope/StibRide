@@ -9,15 +9,15 @@ import java.util.List;
  * Repository pattern to manage a resource of the application: a file, a
  * database, a web service.
  *
- * @author jlc
  * @param <K> key of an element.
  * @param <T> an element.
+ * @author jlc
  */
 public interface Repository<K, T extends Dto<K>> {
 
     /**
      * Add an element to the repository.If the element exists, the repository
-     updates this element.
+     * updates this element.
      *
      * @param item the element to add.
      * @return the element's key, useful when the key is auto-generated.
@@ -37,7 +37,6 @@ public interface Repository<K, T extends Dto<K>> {
      * Returns all the elements of the repository.
      *
      * @return all the elements of the repository.
-     *
      * @throws RepositoryException if the repository can't access to the elements.
      */
     List<T> getAll() throws RepositoryException;
@@ -46,7 +45,6 @@ public interface Repository<K, T extends Dto<K>> {
      * Return the element of the repository with the specific key.
      *
      * @param key key of the element.
-     *
      * @return the element of the repository with the specific key.
      * @throws RepositoryException if the repository can't access to the element.
      */

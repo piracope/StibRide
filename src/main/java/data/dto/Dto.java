@@ -6,10 +6,9 @@ import java.util.Objects;
  * Generic class to build a Data transfer object. The data carried is known by
  * its key.
  *
- * @see
- * <a href="https://en.wikipedia.org/wiki/Data_transfer_object"> Wikipedia</a>
- * @author jlc
  * @param <K> key of the data.
+ * @author jlc
+ * @see <a href="https://en.wikipedia.org/wiki/Data_transfer_object"> Wikipedia</a>
  */
 public abstract class Dto<K> {
 
