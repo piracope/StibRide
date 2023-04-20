@@ -136,4 +136,13 @@ public class StationsDao implements Dao<Integer, StationsDto> {
         return dto;
 
     }
+
+    public static void main(String[] args) throws RepositoryException, SQLException {
+        Connection test = DBManager.getInstance().getConnection();
+        var blabla = test.createStatement();
+        var res = blabla.executeQuery("SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name");
+        while(res.next()) {
+            System.out.println(res.getString("name"));
+        }
+    }
 }

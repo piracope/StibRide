@@ -3,6 +3,7 @@ package data.config;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -18,7 +19,7 @@ public class ConfigManager {
 
     private ConfigManager() {
         prop = new Properties();
-        url = getClass().getClassLoader().getResource(FILE).getFile();
+        url = Objects.requireNonNull(getClass().getClassLoader().getResource(FILE)).getFile();
     }
 
     /**
