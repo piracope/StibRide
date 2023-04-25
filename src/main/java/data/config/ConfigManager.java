@@ -20,6 +20,7 @@ public class ConfigManager {
     private ConfigManager() {
         prop = new Properties();
         url = Objects.requireNonNull(getClass().getClassLoader().getResource(FILE)).getFile();
+        // FIXME : shouldn't there be a load() here ?
     }
 
     /**

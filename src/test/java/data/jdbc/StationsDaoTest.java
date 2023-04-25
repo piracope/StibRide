@@ -1,8 +1,11 @@
 package data.jdbc;
 
+import data.config.ConfigManager;
 import data.dto.StationsDto;
 import data.exception.RepositoryException;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,9 +19,12 @@ class StationsDaoTest {
         PDN = new StationsDto(8312, "PORTE DE NAMUR");
 
         try {
+            ConfigManager.getInstance().load();
             instance = StationsDao.getInstance();
         } catch (RepositoryException e) {
             fail("Impossible de se connecter à la base de donner " + e);
+        } catch (IOException e) {
+            fail("Impossible d'ouvrir le fichier config");
         }
     }
 
