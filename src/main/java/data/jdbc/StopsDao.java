@@ -98,7 +98,7 @@ public class StopsDao implements Dao<StopId, StopsDto> {
 
     @Override
     public List<StopsDto> selectAll() throws RepositoryException {
-        String sql = "SELECT id_line, id_station, id_order FROM STOPS";
+        String sql = "SELECT id_line, id_station, id_order FROM STOPS ORDER BY id_line, id_order";
         List<StopsDto> dtos = new ArrayList<>();
         try (Statement stmt = connexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
