@@ -6,6 +6,8 @@ import data.repository.StationsRepository;
 import data.repository.StopsRepository;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class BestPathSearcher {
     private final Graph G;
@@ -48,8 +50,20 @@ public class BestPathSearcher {
         }
     }
 
+    public List<Node> getPath(String from, String to) {
+        Node start = G.getNode(from);
+        Node dest = G.getNode(to);
+        if(start == null || dest == null) return null;
+
+        Dijkstra.shortestPath(G, start);
+
+        return dest.getShortestPath();
+    }
+
     public static void main(String[] args) throws RepositoryException, IOException {
         ConfigManager.getInstance().load();
         var test = new BestPathSearcher();
+
+        System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "GARE CENTRALE").toArray()));
     }
 }
