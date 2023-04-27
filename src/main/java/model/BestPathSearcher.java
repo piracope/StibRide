@@ -1,15 +1,17 @@
 package model;
 
 import data.config.ConfigManager;
+import data.dto.StationsDto;
 import data.exception.RepositoryException;
 import data.repository.StationsRepository;
 import data.repository.StopsRepository;
+import util.Observable;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class BestPathSearcher {
+public class BestPathSearcher extends Observable {
     private final Graph G;
     private Node workingSource = null;
 
@@ -57,11 +59,15 @@ public class BestPathSearcher {
         if(start == null || dest == null) return null;
 
         if(start != workingSource) {
-            Dijkstra.shortestPath(G, start);
+            Dijkstra.shortestPath(start);
             workingSource = start;
         }
 
         return dest.getShortestPath();
+    }
+
+    public List<String> getStations() throws RepositoryException {
+        return new StationsRepository().getAll().stream().map(StationsDto::getName).toList();
     }
 
     public static void main(String[] args) throws RepositoryException, IOException {

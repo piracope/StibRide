@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 public class Dijkstra {
-    public static void shortestPath(Graph graph, Node source) {
+    public static void shortestPath(Node source) {
         source.setDistance(0); // we begin at this node
 
         Set<Node> settledNodes = new HashSet<>(); // treated nodes

@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 
 public class MainView {
@@ -51,6 +52,10 @@ public class MainView {
             about.setTitle("About");
             about.show();
         });
+    }
+
+    public void setupStations(List<String> stations) {
+
     }
 
 }
