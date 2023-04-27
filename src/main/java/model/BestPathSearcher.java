@@ -11,6 +11,7 @@ import java.util.List;
 
 public class BestPathSearcher {
     private final Graph G;
+    private Node workingSource = null;
 
     public BestPathSearcher() throws RepositoryException {
         G = new Graph();
@@ -55,7 +56,10 @@ public class BestPathSearcher {
         Node dest = G.getNode(to);
         if(start == null || dest == null) return null;
 
-        Dijkstra.shortestPath(G, start);
+        if(start != workingSource) {
+            Dijkstra.shortestPath(G, start);
+            workingSource = start;
+        }
 
         return dest.getShortestPath();
     }
@@ -63,7 +67,7 @@ public class BestPathSearcher {
     public static void main(String[] args) throws RepositoryException, IOException {
         ConfigManager.getInstance().load();
         var test = new BestPathSearcher();
-
         System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "GARE CENTRALE").toArray()));
+        System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "ROI BAUDOUIN").toArray()));
     }
 }
