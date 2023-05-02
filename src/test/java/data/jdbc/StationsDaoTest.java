@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StationsDaoTest {
 
-    private StationsDao instance;
     private static final int KEY = 8312;
     private final StationsDto PDN;
+    private StationsDao instance;
 
     public StationsDaoTest() {
         PDN = new StationsDto(8312, "PORTE DE NAMUR");

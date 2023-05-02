@@ -14,7 +14,7 @@ public interface Observer {
      * method to have all the object's observers notified of the change.
      *
      * @param observable the observable object.
-     * @param arg an argument passed to the {@code notifyObservers} method.
+     * @param arg        an argument passed to the {@code notifyObservers} method.
      */
     void update(Observable observable, Object arg);
 }

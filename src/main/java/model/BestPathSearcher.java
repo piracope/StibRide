@@ -8,6 +8,7 @@ import data.repository.StopsRepository;
 import util.Observable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,13 +21,20 @@ public class BestPathSearcher extends Observable {
         fillGraph();
     }
 
+    public static void main(String[] args) throws RepositoryException, IOException {
+        ConfigManager.getInstance().load();
+        var test = new BestPathSearcher();
+        System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "GARE CENTRALE").toArray()));
+        System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "ROI BAUDOUIN").toArray()));
+    }
+
     private void fillGraph() throws RepositoryException {
         StopsRepository stopRep = new StopsRepository();
         StationsRepository statRep = new StationsRepository();
         var allStations = statRep.getAll();
         var allStops = stopRep.getAll();
 
-        for(var stat : allStations) {
+        for (var stat : allStations) {
             G.addNode(new Node(stat.getName()));
         }
 
@@ -34,17 +42,18 @@ public class BestPathSearcher extends Observable {
         Node prec = null;
 
 
-        for(var stop : allStops) {
+        for (var stop : allStops) {
             // start anew when we get to a new line
-            if(stop.getKey().lineId() != currLine) {
+            if (stop.getKey().lineId() != currLine) {
                 prec = null;
                 currLine = stop.getKey().lineId();
             }
 
             int stationId = stop.getKey().stationId();
             Node toAdd = G.getNode(statRep.get(stationId).getName()); // we get the station
+            toAdd.addLine(stop.getKey().lineId());
 
-            if(prec != null) { // and we add ourselves to the precedent, the precedent to ourselves
+            if (prec != null) { // and we add ourselves to the precedent, the precedent to ourselves
                 prec.addDestination(toAdd);
                 toAdd.addDestination(prec);
             }
@@ -53,27 +62,31 @@ public class BestPathSearcher extends Observable {
         }
     }
 
+    private void resetGraph() {
+        for (Node n : G.getNodes()) {
+            n.reset();
+        }
+    }
+
     public List<Node> getPath(String from, String to) {
         Node start = G.getNode(from);
         Node dest = G.getNode(to);
-        if(start == null || dest == null) return null;
+        if (start == null || dest == null) return null;
 
-        if(start != workingSource) {
+        if (start != workingSource) {
+            resetGraph();
             Dijkstra.shortestPath(start);
             workingSource = start;
         }
 
-        return dest.getShortestPath();
+        var ret = new ArrayList<>(dest.getShortestPath());
+        ret.add(dest);
+
+        notifyObservers(ret);
+        return ret;
     }
 
     public List<String> getStations() throws RepositoryException {
         return new StationsRepository().getAll().stream().map(StationsDto::getName).toList();
-    }
-
-    public static void main(String[] args) throws RepositoryException, IOException {
-        ConfigManager.getInstance().load();
-        var test = new BestPathSearcher();
-        System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "GARE CENTRALE").toArray()));
-        System.out.println(Arrays.deepToString(test.getPath("PORTE DE NAMUR", "ROI BAUDOUIN").toArray()));
     }
 }

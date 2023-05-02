@@ -19,8 +19,8 @@ public class Dijkstra {
             unsettledNodes.remove(curr); // and we'll treat it
             // TODO : replace with PriorityQueue
 
-            for(Node neighbor : curr.getAdjacentNodes()) { // go check its neighbors
-                if(!settledNodes.contains(neighbor)) {
+            for (Node neighbor : curr.getAdjacentNodes()) { // go check its neighbors
+                if (!settledNodes.contains(neighbor)) {
                     computeMinDist(neighbor, curr); // set their min distance to source
                     unsettledNodes.add(neighbor); // and add them for later
                 }
@@ -34,7 +34,7 @@ public class Dijkstra {
     private static void computeMinDist(Node to, Node from) {
         int dist = from.getDistance();
         // FIXME : oopsie i use a magic number! should i make it implementation dependent i.e. check the weight ?
-        if(dist + 1 < to.getDistance()) { // if the new distance is closer
+        if (dist + 1 < to.getDistance()) { // if the new distance is closer
             to.setDistance(dist + 1); // well that's the distance now
 
             var newPath = new LinkedList<>(from.getShortestPath());

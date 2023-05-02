@@ -1,11 +1,9 @@
 package data.jdbc;
 
-import data.config.ConfigManager;
 import data.dto.StationsDto;
 import data.exception.RepositoryException;
 import data.repository.Dao;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

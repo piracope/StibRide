@@ -5,19 +5,34 @@ import java.util.*;
 public class Node {
     private final String name;
 
+    private final List<Integer> lines;
+    private final Set<Node> adjacentNodes;
     private List<Node> shortestPath;
     private int distance;
-    private final Set<Node> adjacentNodes;
 
     public Node(String name) {
         this.name = name;
         shortestPath = new LinkedList<>();
         distance = Integer.MAX_VALUE;
         adjacentNodes = new HashSet<>();
+        lines = new ArrayList<>();
+    }
+
+    public void reset() {
+        shortestPath = new LinkedList<>();
+        distance = Integer.MAX_VALUE;
     }
 
     public void addDestination(Node destination) {
         adjacentNodes.add(destination);
+    }
+
+    public void addLine(int line) {
+        lines.add(line);
+    }
+
+    public List<Integer> getLines() {
+        return lines;
     }
 
     public String getName() {
@@ -26,6 +41,10 @@ public class Node {
 
     public List<Node> getShortestPath() {
         return shortestPath;
+    }
+
+    public void setShortestPath(List<Node> shortestPath) {
+        this.shortestPath = shortestPath;
     }
 
     public int getDistance() {
@@ -38,10 +57,6 @@ public class Node {
 
     public Set<Node> getAdjacentNodes() {
         return adjacentNodes;
-    }
-
-    public void setShortestPath(List<Node> shortestPath) {
-        this.shortestPath = shortestPath;
     }
 
     @Override
