@@ -13,37 +13,13 @@ public class StationsRepository implements Repository<Integer, StationsDto> {
         dao = StationsDao.getInstance();
     }
 
-    StationsRepository(StationsDao dao) { // for testing purposes, I assume
-        this.dao = dao;
-    }
-
-    /*
     @Override
-    public Integer add(StationsDto item) throws RepositoryException {
-        Integer key = item.getKey();
-        if (contains(key)) {
-            dao.update(item);
-        } else {
-            key = dao.insert(item);
-        }
-        return key;
-
-    }
-
-    @Override
-    public void remove(Integer key) throws RepositoryException {
-        dao.delete(key);
-    }
-
-     */
-
-    @Override
-    public Integer add(StationsDto item) throws RepositoryException {
+    public Integer add(StationsDto item) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void remove(Integer key) throws RepositoryException {
+    public void remove(Integer key) {
         throw new UnsupportedOperationException();
     }
 

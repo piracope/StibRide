@@ -42,11 +42,16 @@
       fx:controller="view.MainView">
     <MenuBar VBox.vgrow="NEVER">
         <menus>
-            <Menu mnemonicParsing="false" text="File">
-                <MenuItem fx:id="quitItem" mnemonicParsing="false" text="Quit"/>
+            <Menu mnemonicParsing="false" text="Fichier">
+                <MenuItem fx:id="quitItem" mnemonicParsing="false" text="Quitter"/>
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-                <MenuItem fx:id="aboutItem" mnemonicParsing="false" text="About STIBRide"/>
+            <Menu mnemonicParsing="false" text="Éditer">
+                <items>
+                    <Menu fx:id="savedMenu" mnemonicParsing="false" text="Itinéraires sauvegardés"/>
+                </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Aide">
+                <MenuItem fx:id="aboutItem" mnemonicParsing="false" text="À propos deSTIBRide"/>
             </Menu>
         </menus>
     </MenuBar>
@@ -70,7 +75,12 @@
             <SearchableComboBox fx:id="source"/>
             <Label text="Destination" underline="true"/>
             <SearchableComboBox fx:id="destination"/>
-            <Button fx:id="startButton" mnemonicParsing="false" text="Rechercher"/>
+            <HBox alignment="CENTER" spacing="20.0">
+                <children>
+                    <Button fx:id="startButton" mnemonicParsing="false" text="Lancer"/>
+                    <Button fx:id="saveButton" mnemonicParsing="false" text="Sauvegarder"/>
+                </children>
+            </HBox>
         </VBox>
         <TableView fx:id="table" focusTraversable="false" prefHeight="382.0" prefWidth="993.0">
             <columns>

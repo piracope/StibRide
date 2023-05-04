@@ -1,5 +1,6 @@
 package view;
 
+import data.exception.RepositoryException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,6 +15,8 @@ import java.util.List;
 
 public class MainView {
 
+    @FXML
+    public Menu savedMenu;
     @FXML
     private MenuItem aboutItem;
 
@@ -38,6 +41,10 @@ public class MainView {
     @FXML
     private TableColumn<Node, String> stationsCol;
 
+    @FXML
+    private Button saveButton;
+
+    @FXML
 
     public void initialize() {
         menuSetup();
@@ -61,6 +68,7 @@ public class MainView {
 
     public void addButtonHandlers(Presenter presenter) {
         startButton.setOnAction(new StartButtonHandler(presenter));
+        saveButton.setOnAction(new SaveButtonHandler(presenter));
     }
 
     public void setupStations(List<String> stations) {
@@ -86,6 +94,41 @@ public class MainView {
         @Override
         public void handle(ActionEvent actionEvent) {
             presenter.findPath(source.getValue(), destination.getValue());
+        }
+    }
+
+    private class SaveButtonHandler implements EventHandler<ActionEvent> {
+        private final Presenter presenter;
+
+        private final TextInputDialog saveDialog;
+
+        public SaveButtonHandler(Presenter presenter) {
+            this.presenter = presenter;
+            this.saveDialog = new TextInputDialog();
+            saveDialog.setTitle("Sauvegarde de l'itinéraire");
+            final Button button = (Button) saveDialog.getDialogPane().lookupButton(ButtonType.OK);
+            button.addEventFilter(ActionEvent.ACTION, event -> {
+                if (saveDialog.getEditor().getCharacters().isEmpty()) {
+                    event.consume();
+                }
+            });
+        }
+
+        private String getName() {
+            saveDialog.setContentText("Quel est le nom de l'itinéraire " + source.getValue() + " -- " + destination.getValue());
+            saveDialog.showAndWait();
+
+            return saveDialog.getEditor().getCharacters().toString();
+        }
+
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            String name = getName();
+            try {
+                presenter.savePath(source.getValue(), destination.getValue(), name);
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

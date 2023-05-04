@@ -32,11 +32,20 @@ public class Presenter implements Observer {
 
     @Override
     public void update(Observable observable, Object arg) {
+        if (arg == null) {
+            // changement de l'affichage -> mettre à jour les destinations sauvegardées
+            return;
+        }
+
         try {
             view.showResult((List<Node>) arg);
         } catch (ClassCastException e) {
             System.err.println("that's not normal");
         }
 
+    }
+
+    public void savePath(String start, String destination, String name) throws RepositoryException {
+        model.savePath(start, destination, name);
     }
 }

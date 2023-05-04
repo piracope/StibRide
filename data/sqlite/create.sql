@@ -338,4 +338,14 @@ INSERT INTO `STOPS` (id_line, id_station, id_order)
 VALUES (6, 8462, 25);
 INSERT INTO `STOPS` (id_line, id_station, id_order)
 VALUES (6, 8472, 26);
+DROP TABLE IF EXISTS `SAVED`;
+CREATE TABLE IF NOT EXISTS `SAVED`
+(
+    `id_station_start` INTEGER NOT NULL,
+    `id_station_dest`  INTEGER NOT NULL,
+    `name`             VARCHAR(50),
+    FOREIGN KEY (`id_station_start`) REFERENCES `STATIONS` (`id`),
+    FOREIGN KEY (`id_station_dest`) REFERENCES `STATIONS` (`id`),
+    PRIMARY KEY (`name`)
+);
 COMMIT;

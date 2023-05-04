@@ -1,8 +1,10 @@
 package model;
 
 import data.config.ConfigManager;
+import data.dto.SavedDto;
 import data.dto.StationsDto;
 import data.exception.RepositoryException;
+import data.repository.SavedRepository;
 import data.repository.StationsRepository;
 import data.repository.StopsRepository;
 import util.Observable;
@@ -35,7 +37,7 @@ public class BestPathSearcher extends Observable {
         var allStops = stopRep.getAll();
 
         for (var stat : allStations) {
-            G.addNode(new Node(stat.getName()));
+            G.addNode(new Node(stat.getName(), stat.getKey()));
         }
 
         int currLine = allStops.get(0).getKey().lineId();
@@ -88,5 +90,16 @@ public class BestPathSearcher extends Observable {
 
     public List<String> getStations() throws RepositoryException {
         return new StationsRepository().getAll().stream().map(StationsDto::getName).toList();
+    }
+
+    public void savePath(String start, String destination, String name) throws RepositoryException {
+        Node startN = G.getNode(start);
+        Node destN = G.getNode(destination);
+
+        if (startN == null || destN == null || name == null) return;
+
+        SavedRepository saved = new SavedRepository();
+        saved.add(new SavedDto(startN.getId(), destN.getId(), name));
+        notifyObservers();
     }
 }

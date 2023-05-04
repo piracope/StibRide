@@ -4,14 +4,16 @@ import java.util.*;
 
 public class Node {
     private final String name;
+    private final int id;
 
     private final List<Integer> lines;
     private final Set<Node> adjacentNodes;
     private List<Node> shortestPath;
     private int distance;
 
-    public Node(String name) {
+    public Node(String name, int id) {
         this.name = name;
+        this.id = id;
         shortestPath = new LinkedList<>();
         distance = Integer.MAX_VALUE;
         adjacentNodes = new HashSet<>();
@@ -37,6 +39,10 @@ public class Node {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public List<Node> getShortestPath() {
