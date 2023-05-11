@@ -1,12 +1,15 @@
 package model;
 
 import data.config.ConfigManager;
+import data.dto.Dto;
 import data.dto.SavedDto;
 import data.dto.StationsDto;
 import data.exception.RepositoryException;
 import data.repository.SavedRepository;
 import data.repository.StationsRepository;
 import data.repository.StopsRepository;
+import presenter.Update;
+import presenter.UpdateType;
 import util.Observable;
 
 import java.io.IOException;
@@ -84,12 +87,16 @@ public class BestPathSearcher extends Observable {
         var ret = new ArrayList<>(dest.getShortestPath());
         ret.add(dest);
 
-        notifyObservers(ret);
+        notifyObservers(new Update(UpdateType.SEARCH_RESULT, ret));
         return ret;
     }
 
     public List<String> getStations() throws RepositoryException {
         return new StationsRepository().getAll().stream().map(StationsDto::getName).toList();
+    }
+
+    public List<String> getSaved() throws RepositoryException {
+        return new SavedRepository().getAll().stream().map(Dto::getKey).toList();
     }
 
     public void savePath(String start, String destination, String name) throws RepositoryException {
@@ -100,6 +107,16 @@ public class BestPathSearcher extends Observable {
 
         SavedRepository saved = new SavedRepository();
         saved.add(new SavedDto(startN.getId(), destN.getId(), name));
-        notifyObservers();
+        notifyObservers(new Update(UpdateType.SAVED, getSaved()));
+    }
+
+    public void fetchSave(String text) throws RepositoryException {
+        SavedDto save = new SavedRepository().get(text);
+        StationsRepository stations = new StationsRepository();
+        String source = stations.get(save.getStartId()).getName();
+        String dest = stations.get(save.getDestId()).getName();
+
+
+        notifyObservers(new Update(UpdateType.SAVE_FETCH, new String[]{source, dest}));
     }
 }

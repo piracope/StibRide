@@ -84,6 +84,27 @@ public class MainView {
         table.getItems().addAll(results);
     }
 
+    public void updateSaved(Presenter presenter, List<String> saved) {
+        savedMenu.getItems().clear();
+        savedMenu.getItems().addAll(saved.stream().map(s -> {
+            MenuItem ret = new MenuItem(s);
+            ret.setOnAction(e -> {
+                try {
+                    presenter.fetchSave(ret.getText());
+                } catch (RepositoryException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            return ret;
+        }).toList());
+    }
+
+    public void executeSave(String source, String dest) {
+        this.source.setValue(source);
+        this.destination.setValue(dest);
+        startButton.fire();
+    }
+
     private class StartButtonHandler implements EventHandler<ActionEvent> {
         private final Presenter presenter;
 

@@ -23,7 +23,11 @@ public class Presenter implements Observer {
     public void initialize() throws RepositoryException {
         model.addObserver(this);
         view.setupStations(model.getStations());
+        updateSaved();
+    }
 
+    public void updateSaved() throws RepositoryException {
+        view.updateSaved(this, model.getSaved());
     }
 
     public void findPath(String source, String dest) {
@@ -32,13 +36,16 @@ public class Presenter implements Observer {
 
     @Override
     public void update(Observable observable, Object arg) {
-        if (arg == null) {
-            // changement de l'affichage -> mettre à jour les destinations sauvegardées
-            return;
-        }
-
         try {
-            view.showResult((List<Node>) arg);
+            Update up = (Update) arg;
+            switch (up.type()) {
+                case SEARCH_RESULT -> view.showResult((List<Node>) up.arg());
+                case SAVED -> view.updateSaved(this, (List<String>) up.arg());
+                case SAVE_FETCH -> {
+                    String[] obj = (String[]) up.arg();
+                    view.executeSave(obj[0], obj[1]);
+                }
+            }
         } catch (ClassCastException e) {
             System.err.println("that's not normal");
         }
@@ -47,5 +54,9 @@ public class Presenter implements Observer {
 
     public void savePath(String start, String destination, String name) throws RepositoryException {
         model.savePath(start, destination, name);
+    }
+
+    public void fetchSave(String text) throws RepositoryException {
+        model.fetchSave(text);
     }
 }
