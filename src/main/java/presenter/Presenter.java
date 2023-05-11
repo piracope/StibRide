@@ -56,7 +56,7 @@ public class Presenter implements Observer {
         model.savePath(start, destination, name);
     }
 
-    public void fetchSave(String text) throws RepositoryException {
-        model.fetchSave(text);
+    public String[] fetchSave(String text) throws RepositoryException {
+        return model.fetchSave(text);
     }
 }

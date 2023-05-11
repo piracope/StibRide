@@ -1,5 +1,6 @@
 package view;
 
+import data.dto.SavedDto;
 import data.exception.RepositoryException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -87,16 +88,34 @@ public class MainView {
     public void updateSaved(Presenter presenter, List<String> saved) {
         savedMenu.getItems().clear();
         savedMenu.getItems().addAll(saved.stream().map(s -> {
-            MenuItem ret = new MenuItem(s);
-            ret.setOnAction(e -> {
+            Menu ret = new Menu(s);
+
+            MenuItem use = new MenuItem("Utiliser");
+            MenuItem update = new MenuItem("Modifier");
+            MenuItem delete = new MenuItem("Supprimer");
+
+            use.setOnAction(e -> {
                 try {
-                    presenter.fetchSave(ret.getText());
+                    String[] save = presenter.fetchSave(s);
+                    executeSave(save[0], save[1]);
                 } catch (RepositoryException ex) {
                     throw new RuntimeException(ex);
                 }
             });
+
+            update.setOnAction(e -> modifySave(presenter, s));
+
+            ret.getItems().addAll(use, update, delete);
             return ret;
         }).toList());
+    }
+
+    public void modifySave(Presenter presenter, String name) {
+        Dialog<SavedDto> dialog = new Dialog<>();
+        dialog.setTitle("Modification du trajet " + name);
+
+        // TODO : create a new FXML dialog and like put everything in it.
+
     }
 
     public void executeSave(String source, String dest) {

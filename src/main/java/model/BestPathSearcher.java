@@ -110,13 +110,12 @@ public class BestPathSearcher extends Observable {
         notifyObservers(new Update(UpdateType.SAVED, getSaved()));
     }
 
-    public void fetchSave(String text) throws RepositoryException {
+    public String[] fetchSave(String text) throws RepositoryException {
         SavedDto save = new SavedRepository().get(text);
         StationsRepository stations = new StationsRepository();
         String source = stations.get(save.getStartId()).getName();
         String dest = stations.get(save.getDestId()).getName();
 
-
-        notifyObservers(new Update(UpdateType.SAVE_FETCH, new String[]{source, dest}));
+        return new String[]{source, dest};
     }
 }
