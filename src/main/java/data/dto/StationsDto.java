@@ -1,6 +1,9 @@
 package data.dto;
 
 public class StationsDto extends Dto<Integer> {
+    /**
+     * The Station's name.
+     */
     private final String name;
 
     /**

@@ -1,7 +1,7 @@
-package presenter;
+package util;
 
 public enum UpdateType {
     SEARCH_RESULT,
-    SAVED,
-    SAVE_FETCH,
+    NEW_FAVORITE,
+    FAV_FETCH,
 }

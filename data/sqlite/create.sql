@@ -338,8 +338,8 @@ INSERT INTO `STOPS` (id_line, id_station, id_order)
 VALUES (6, 8462, 25);
 INSERT INTO `STOPS` (id_line, id_station, id_order)
 VALUES (6, 8472, 26);
-DROP TABLE IF EXISTS `SAVED`;
-CREATE TABLE IF NOT EXISTS `SAVED`
+DROP TABLE IF EXISTS `FAVORITE`;
+CREATE TABLE IF NOT EXISTS `FAVORITE`
 (
     `id_station_start` INTEGER NOT NULL,
     `id_station_dest`  INTEGER NOT NULL,

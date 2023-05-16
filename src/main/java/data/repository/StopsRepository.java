@@ -14,37 +14,13 @@ public class StopsRepository implements Repository<StopId, StopsDto> {
         dao = StopsDao.getInstance();
     }
 
-    StopsRepository(StopsDao dao) {
-        this.dao = dao;
-    }
-
-    /*
-    @Override
-    public StopId add(StopsDto item) throws RepositoryException {
-        StopId key = item.getKey();
-        if (contains(key)) {
-            dao.update(item);
-        } else {
-            key = dao.insert(item);
-        }
-        return key;
-
-    }
-
-    @Override
-    public void remove(StopId key) throws RepositoryException {
-        dao.delete(key);
-    }
-
-     */
-
     @Override
     public StopId add(StopsDto item) throws RepositoryException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void remove(StopId key) throws RepositoryException {
+    public void remove(StopId key) {
         throw new UnsupportedOperationException();
     }
 

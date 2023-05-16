@@ -2,6 +2,9 @@ package data.dto;
 
 public class StopsDto extends Dto<StopId> {
 
+    /**
+     * The order in the line.
+     */
     private final int order;
 
     /**

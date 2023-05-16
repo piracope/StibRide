@@ -47,7 +47,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Éditer">
                 <items>
-                    <Menu fx:id="savedMenu" mnemonicParsing="false" text="Itinéraires sauvegardés"/>
+                    <Menu fx:id="favoriteMenu" mnemonicParsing="false" text="Itinéraires sauvegardés"/>
                 </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Aide">
@@ -78,7 +78,7 @@
             <HBox alignment="CENTER" spacing="20.0">
                 <children>
                     <Button fx:id="startButton" mnemonicParsing="false" text="Lancer"/>
-                    <Button fx:id="saveButton" mnemonicParsing="false" text="Sauvegarder"/>
+                    <Button fx:id="favButton" mnemonicParsing="false" text="Sauvegarder"/>
                 </children>
             </HBox>
         </VBox>

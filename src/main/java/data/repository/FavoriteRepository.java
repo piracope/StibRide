@@ -1,20 +1,20 @@
 package data.repository;
 
-import data.dto.SavedDto;
+import data.dto.FavoriteDto;
 import data.exception.RepositoryException;
-import data.jdbc.SavedDao;
+import data.jdbc.FavoriteDao;
 
 import java.util.List;
 
-public class SavedRepository implements Repository<String, SavedDto> {
-    private final SavedDao dao;
+public class FavoriteRepository implements Repository<String, FavoriteDto> {
+    private final FavoriteDao dao;
 
-    public SavedRepository() throws RepositoryException {
-        dao = SavedDao.getInstance();
+    public FavoriteRepository() throws RepositoryException {
+        dao = FavoriteDao.getInstance();
     }
 
     @Override
-    public String add(SavedDto item) throws RepositoryException {
+    public String add(FavoriteDto item) throws RepositoryException {
         String key = item.getKey();
         if (contains(key)) {
             dao.update(item);
@@ -30,12 +30,12 @@ public class SavedRepository implements Repository<String, SavedDto> {
     }
 
     @Override
-    public List<SavedDto> getAll() throws RepositoryException {
+    public List<FavoriteDto> getAll() throws RepositoryException {
         return dao.selectAll();
     }
 
     @Override
-    public SavedDto get(String key) throws RepositoryException {
+    public FavoriteDto get(String key) throws RepositoryException {
         return dao.select(key);
     }
 

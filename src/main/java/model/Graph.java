@@ -19,6 +19,12 @@ public class Graph {
         return nodes;
     }
 
+    /**
+     * Returns the node which has a given station's name.
+     *
+     * @param name the station's name
+     * @return the node of that station or null if it couldn't be found
+     */
     public Node getNode(String name) {
         return nodes.stream().filter(n -> n.getName().equals(name)).findAny().orElse(null);
     }

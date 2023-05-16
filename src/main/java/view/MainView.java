@@ -1,6 +1,6 @@
 package view;
 
-import data.dto.SavedDto;
+import data.dto.FavoriteDto;
 import data.exception.RepositoryException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -17,7 +17,7 @@ import java.util.List;
 public class MainView {
 
     @FXML
-    public Menu savedMenu;
+    public Menu favoriteMenu;
     @FXML
     private MenuItem aboutItem;
 
@@ -43,10 +43,9 @@ public class MainView {
     private TableColumn<Node, String> stationsCol;
 
     @FXML
-    private Button saveButton;
+    private Button favButton;
 
     @FXML
-
     public void initialize() {
         menuSetup();
 
@@ -54,6 +53,9 @@ public class MainView {
         stationsCol.setCellValueFactory(new PropertyValueFactory<>("name"));
     }
 
+    /**
+     * Sets up the basic menu elements
+     */
     private void menuSetup() {
         quitItem.setOnAction(e -> Platform.exit());
         aboutItem.setOnAction(e -> {
@@ -67,11 +69,21 @@ public class MainView {
         });
     }
 
+    /**
+     * Adds button handlers to all (most) clickable buttons
+     *
+     * @param presenter the presenter to which we will communicate
+     */
     public void addButtonHandlers(Presenter presenter) {
         startButton.setOnAction(new StartButtonHandler(presenter));
-        saveButton.setOnAction(new SaveButtonHandler(presenter));
+        favButton.setOnAction(new SaveButtonHandler(presenter));
     }
 
+    /**
+     * Sets up the searchable fields with an updated list of stations.
+     *
+     * @param stations the stations that we have to choose from
+     */
     public void setupStations(List<String> stations) {
         source.getItems().clear();
         source.getItems().addAll(stations);
@@ -80,14 +92,29 @@ public class MainView {
         destination.getItems().addAll(stations);
     }
 
+    /**
+     * Shows the shortest path resulting from a search in the table.
+     *
+     * @param results the shortest path
+     */
     public void showResult(List<Node> results) {
         table.getItems().clear();
         table.getItems().addAll(results);
     }
 
-    public void updateSaved(Presenter presenter, List<String> saved) {
-        savedMenu.getItems().clear();
-        savedMenu.getItems().addAll(saved.stream().map(s -> {
+    /**
+     * Updates the list of favorites.
+     *
+     * @param presenter the presenter with which we will communicate future actions
+     * @param favs      the favorite trips
+     */
+    public void updateFavorite(Presenter presenter, List<String> favs) {
+        favoriteMenu.getItems().clear();
+        favoriteMenu.getItems().addAll(favs.stream().map(s -> {
+            // TRIP NAME
+            //      Utiliser -> fires the search
+            //      Modifier -> shows a popup to modify that save
+            //      Supprimer -> shows a confirmation popup
             Menu ret = new Menu(s);
 
             MenuItem use = new MenuItem("Utiliser");
@@ -97,7 +124,9 @@ public class MainView {
             use.setOnAction(e -> {
                 try {
                     String[] save = presenter.fetchSave(s);
-                    executeSave(save[0], save[1]);
+                    if (save != null) {
+                        executeFavorite(save[0], save[1]);
+                    }
                 } catch (RepositoryException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -105,25 +134,46 @@ public class MainView {
 
             update.setOnAction(e -> modifySave(presenter, s));
 
+            delete.setOnAction(e -> {
+                try {
+                    Alert conf = new Alert(Alert.AlertType.CONFIRMATION, "Voulez-vous vraiment supprimer le trajet " + s + "?");
+                    conf.showAndWait();
+                    if (conf.getResult() == ButtonType.OK) {
+                        presenter.deleteFav(s);
+                    }
+                } catch (RepositoryException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
             ret.getItems().addAll(use, update, delete);
             return ret;
         }).toList());
     }
 
     public void modifySave(Presenter presenter, String name) {
-        Dialog<SavedDto> dialog = new Dialog<>();
+        Dialog<FavoriteDto> dialog = new Dialog<>();
         dialog.setTitle("Modification du trajet " + name);
 
         // TODO : create a new FXML dialog and like put everything in it.
 
     }
 
-    public void executeSave(String source, String dest) {
+    /**
+     * Replaces a favorite trip's stations in their fields and starts the search.
+     *
+     * @param source the favorite's starting station's name
+     * @param dest   the favorite's end station's name
+     */
+    public void executeFavorite(String source, String dest) {
         this.source.setValue(source);
         this.destination.setValue(dest);
         startButton.fire();
     }
 
+    /**
+     * The handler for the start button
+     */
     private class StartButtonHandler implements EventHandler<ActionEvent> {
         private final Presenter presenter;
 
@@ -137,35 +187,55 @@ public class MainView {
         }
     }
 
+    // TODO : the handlers should just fetch the values and send them to the presenter. The presenter then asks the view
+    //  to display the necessary dialogs.
+
+    /**
+     * The handler for the favorite button
+     */
     private class SaveButtonHandler implements EventHandler<ActionEvent> {
         private final Presenter presenter;
-
         private final TextInputDialog saveDialog;
 
         public SaveButtonHandler(Presenter presenter) {
             this.presenter = presenter;
             this.saveDialog = new TextInputDialog();
             saveDialog.setTitle("Sauvegarde de l'itinéraire");
-            final Button button = (Button) saveDialog.getDialogPane().lookupButton(ButtonType.OK);
-            button.addEventFilter(ActionEvent.ACTION, event -> {
+            final Button confirmed = (Button) saveDialog.getDialogPane().lookupButton(ButtonType.OK);
+            confirmed.addEventFilter(ActionEvent.ACTION, event -> {
                 if (saveDialog.getEditor().getCharacters().isEmpty()) {
-                    event.consume();
+                    event.consume(); // we don't accept empty station names ofc
                 }
             });
         }
 
-        private String getName() {
-            saveDialog.setContentText("Quel est le nom de l'itinéraire " + source.getValue() + " -- " + destination.getValue());
-            saveDialog.showAndWait();
-
-            return saveDialog.getEditor().getCharacters().toString();
+        /**
+         * Gets the name of that trip.
+         *
+         * @param start the starting station's name
+         * @param end   the final station's name
+         * @return the trip's name
+         */
+        private String getFavName(String start, String end) {
+            saveDialog.setContentText("Quel est le nom de l'itinéraire " + start + " -- " + end);
+            return saveDialog.showAndWait().orElse(null);
         }
 
         @Override
         public void handle(ActionEvent actionEvent) {
-            String name = getName();
+            String start = source.getValue();
+            String end = destination.getValue();
+
+            if (start == null || end == null) { // don't show the modal if there's nothing to work with
+                actionEvent.consume();
+                return;
+            }
+
+            String name = getFavName(start, end);
+            if (name == null) return;
+
             try {
-                presenter.savePath(source.getValue(), destination.getValue(), name);
+                presenter.savePath(start, end, name);
             } catch (RepositoryException e) {
                 throw new RuntimeException(e);
             }

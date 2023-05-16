@@ -5,7 +5,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+/**
+ * Utility class that performs a Dijkstra best path search on a graph.
+ */
 public class Dijkstra {
+    /**
+     * Computes the shortest path to get to each node in the graph from a given starting point.
+     *
+     * @param source the starting node from which we need to get the path
+     */
     public static void shortestPath(Node source) {
         source.setDistance(0); // we begin at this node
 

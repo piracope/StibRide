@@ -22,70 +22,13 @@ public class StationsDao implements Dao<Integer, StationsDto> {
         return INSTANCE;
     }
 
-    /*
     @Override
-    public Integer insert(StationsDto item) throws RepositoryException {
-        if (item == null) {
-            throw new RepositoryException("Aucun élément donné en paramètre");
-        }
-        Integer id = null;
-        String sql = "INSERT INTO STATIONS(id, name) values(?, ? )";
-        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
-            pstmt.setInt(1, item.getKey());
-            pstmt.setString(2, item.getName());
-            pstmt.executeUpdate();
-
-            ResultSet result = pstmt.getGeneratedKeys();
-            while (result.next()) {
-                id = result.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException(e);
-        }
-        return id;
-
-    }
-
-    @Override
-    public void delete(Integer key) throws RepositoryException {
-        if (key == null) {
-            throw new RepositoryException("Aucune clé donnée en paramètre");
-        }
-        String sql = "DELETE FROM STATIONS WHERE id = ?";
-        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
-            pstmt.setInt(1, key);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RepositoryException(e);
-        }
-
-    }
-
-    @Override
-    public void update(StationsDto item) throws RepositoryException {
-        if (item == null) {
-            throw new RepositoryException("Aucun élément donné en paramètre");
-        }
-        String sql = "UPDATE STATIONS SET name=? where id=? ";
-        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
-            pstmt.setString(1, item.getName());
-            pstmt.setInt(2, item.getKey());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RepositoryException(e.getMessage());
-        }
-
-    }
-
-     */
-
-    @Override
-    public Integer insert(StationsDto item) throws RepositoryException {
+    public Integer insert(StationsDto item) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(Integer key) throws RepositoryException {
+    public void delete(Integer key) {
         throw new UnsupportedOperationException();
     }
 

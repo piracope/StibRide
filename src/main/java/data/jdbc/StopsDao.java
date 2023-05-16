@@ -22,72 +22,13 @@ public class StopsDao implements Dao<StopId, StopsDto> {
         return INSTANCE;
     }
 
-    /*
     @Override
-    public StopId insert(StopsDto item) throws RepositoryException {
-        if (item == null) {
-            throw new RepositoryException("Aucun élément donné en paramètre");
-        }
-        StopId id = null;
-        String sql = "INSERT INTO STOPS(id_line, id_station, id_order) values(?, ?, ?)";
-        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
-            pstmt.setInt(1, item.getKey().lineId());
-            pstmt.setInt(2, item.getKey().stationId());
-            pstmt.setInt(3, item.getOrder());
-            pstmt.executeUpdate();
-
-            ResultSet result = pstmt.getGeneratedKeys();
-            while (result.next()) {
-                id = new StopId(result.getInt(1), result.getInt(2));
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException(e);
-        }
-        return id;
-
-    }
-
-    @Override
-    public void delete(StopId key) throws RepositoryException {
-        if (key == null) {
-            throw new RepositoryException("Aucune clé donnée en paramètre");
-        }
-        String sql = "DELETE FROM STOPS WHERE id_line = ? AND id_station = ?";
-        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
-            pstmt.setInt(1, key.lineId());
-            pstmt.setInt(2, key.stationId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RepositoryException(e);
-        }
-    }
-
-    @Override
-    public void update(StopsDto item) throws RepositoryException {
-        if (item == null) {
-            throw new RepositoryException("Aucun élément donné en paramètre");
-        }
-        String sql = "UPDATE STOPS SET id_order=? where id_line=? AND id_station=? ";
-        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
-            pstmt.setInt(1, item.getOrder());
-            pstmt.setInt(2, item.getKey().lineId());
-            pstmt.setInt(3, item.getKey().stationId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RepositoryException(e.getMessage());
-        }
-
-    }
-
-     */
-
-    @Override
-    public StopId insert(StopsDto item) throws RepositoryException {
+    public StopId insert(StopsDto item) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete(StopId key) throws RepositoryException {
+    public void delete(StopId key) {
         throw new UnsupportedOperationException();
     }
 
