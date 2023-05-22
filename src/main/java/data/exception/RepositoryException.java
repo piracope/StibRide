@@ -5,7 +5,7 @@ package data.exception;
  *
  * @author jlc
  */
-public class RepositoryException extends Exception {
+public class RepositoryException extends RuntimeException {
 
     /**
      * Creates a new instance of <code>RepositoryException</code> without detail

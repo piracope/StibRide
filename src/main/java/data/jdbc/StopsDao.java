@@ -33,7 +33,7 @@ public class StopsDao implements Dao<StopId, StopsDto> {
     }
 
     @Override
-    public void update(StopsDto item) throws RepositoryException {
+    public void update(StopsDto item) {
         throw new UnsupportedOperationException();
     }
 

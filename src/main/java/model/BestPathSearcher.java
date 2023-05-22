@@ -95,13 +95,12 @@ public class BestPathSearcher extends Observable {
      *
      * @param from the starting station
      * @param to   the final station
-     * @return the list of Nodes that form the best path between from and to
      */
-    public List<Node> getPath(String from, String to) {
+    public void getPath(String from, String to) {
         // we do a lookup by name
         Node start = G.getNode(from);
         Node dest = G.getNode(to);
-        if (start == null || dest == null) return null; // null-safe (we just don't do anything)
+        if (start == null || dest == null) return; // null-safe (we just don't do anything)
 
         // if the working source changed, we need to re-compute Dijkstra
         if (start != workingSource) {
@@ -114,7 +113,6 @@ public class BestPathSearcher extends Observable {
         ret.add(dest);
 
         notifyObservers(new Update(UpdateType.SEARCH_RESULT, ret));
-        return ret;
     }
 
     public List<String> getStations() throws RepositoryException {
@@ -165,7 +163,7 @@ public class BestPathSearcher extends Observable {
         return new String[]{source, dest};
     }
 
-    public void deleteFav(String fav) throws RepositoryException {
+    public void deleteFavorite(String fav) throws RepositoryException {
         new FavoriteRepository().remove(fav);
         notifyObservers(new Update(UpdateType.NEW_FAVORITE, getFavorite()));
     }

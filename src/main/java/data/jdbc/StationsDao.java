@@ -33,7 +33,7 @@ public class StationsDao implements Dao<Integer, StationsDto> {
     }
 
     @Override
-    public void update(StationsDto item) throws RepositoryException {
+    public void update(StationsDto item) {
         throw new UnsupportedOperationException();
     }
 

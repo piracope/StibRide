@@ -51,7 +51,7 @@
                 </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Aide">
-                <MenuItem fx:id="aboutItem" mnemonicParsing="false" text="À propos deSTIBRide"/>
+                <MenuItem fx:id="aboutItem" mnemonicParsing="false" text="À propos de STIBRide"/>
             </Menu>
         </menus>
     </MenuBar>

@@ -15,7 +15,7 @@ public class StopsRepository implements Repository<StopId, StopsDto> {
     }
 
     @Override
-    public StopId add(StopsDto item) throws RepositoryException {
+    public StopId add(StopsDto item) {
         throw new UnsupportedOperationException();
     }
 

@@ -1,13 +1,16 @@
 package view;
 
 import data.dto.FavoriteDto;
-import data.exception.RepositoryException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 import model.Node;
 import org.controlsfx.control.SearchableComboBox;
 import presenter.Presenter;
@@ -45,6 +48,97 @@ public class MainView {
     @FXML
     private Button favButton;
 
+    /**
+     * Displays an error message in a modal alert.
+     *
+     * @param errorMsg the message to show the user
+     */
+    public static void showError(String errorMsg) {
+        Alert error = new Alert(Alert.AlertType.ERROR, errorMsg);
+        error.setTitle("Erreur");
+        error.setHeaderText("Erreur");
+        error.showAndWait();
+    }
+
+    /**
+     * Asks the user for text content in a dialog, with a given prompt.
+     * <p>
+     * This function prevents submitting a null string.
+     *
+     * @param title  the title of the dialog
+     * @param prompt the prompt to show the user
+     * @return the text input by the user, or null if none was present
+     */
+    public static String askText(String title, String prompt) {
+        // setup content
+        var dialog = new TextInputDialog();
+        dialog.setContentText(prompt);
+        dialog.setTitle(title);
+
+        // forbid null input
+        final Button confirmed = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        confirmed.addEventFilter(ActionEvent.ACTION, event -> {
+            if (dialog.getEditor().getCharacters().isEmpty()) {
+                event.consume(); // we don't accept empty station names ofc
+            }
+        });
+        return dialog.showAndWait().orElse(null);
+    }
+
+    /**
+     * Shows a confirmation dialog and returns true if the user pressed OK.
+     *
+     * @param prompt the prompt to show the user
+     * @return true if they pressed OK
+     */
+    public static boolean showConfirm(String prompt) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, prompt);
+        confirm.showAndWait();
+        return confirm.getResult() == ButtonType.OK;
+    }
+
+    public static void showSucceed(String text) {
+        Alert yipee = new Alert(Alert.AlertType.INFORMATION, text);
+        yipee.showAndWait();
+    }
+
+    public String[] showFavoriteEditDialog(String name, String start, String end) {
+
+        GridPane root = new GridPane();
+
+        TextField nameFld = new TextField(name);
+        SearchableComboBox<String> sourceCopy = new SearchableComboBox<>(source.getItems());
+        sourceCopy.setValue(start);
+        SearchableComboBox<String> destCopy = new SearchableComboBox<>(destination.getItems());
+        destCopy.setValue(end);
+
+        Button ok = new Button("Modifier");
+        Button cancel = new Button("Annuler");
+
+        root.add(new Label("Nom : "), 0, 0);
+        root.add(nameFld, 1, 0);
+        root.add(new Label("Départ"), 0, 1);
+        root.add(sourceCopy, 1, 1);
+        root.add(new Label("Destination"), 0, 2);
+        root.add(destCopy, 1, 2);
+        root.add(ok, 0, 3);
+        root.add(cancel, 1, 3);
+
+        Dialog<String[]> dialog = new Dialog<>();
+        dialog.setTitle("Modification de l'itinéraire " + name);
+        dialog.getDialogPane().setContent(root);
+
+        ok.setOnAction(e -> {
+            e.consume();
+            dialog.setResult(new String[]{nameFld.getText(), sourceCopy.getValue(), destCopy.getValue()});
+        });
+
+        Window window = dialog.getDialogPane().getScene().getWindow();
+        window.setOnCloseRequest(event -> window.hide());
+
+        return dialog.showAndWait().orElse(null);
+    }
+
     @FXML
     public void initialize() {
         menuSetup();
@@ -65,7 +159,7 @@ public class MainView {
                     For ATLG4""",
                     ButtonType.CLOSE);
             about.setTitle("About");
-            about.show();
+            about.showAndWait();
         });
     }
 
@@ -121,42 +215,13 @@ public class MainView {
             MenuItem update = new MenuItem("Modifier");
             MenuItem delete = new MenuItem("Supprimer");
 
-            use.setOnAction(e -> {
-                try {
-                    String[] save = presenter.fetchSave(s);
-                    if (save != null) {
-                        executeFavorite(save[0], save[1]);
-                    }
-                } catch (RepositoryException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
-            update.setOnAction(e -> modifySave(presenter, s));
-
-            delete.setOnAction(e -> {
-                try {
-                    Alert conf = new Alert(Alert.AlertType.CONFIRMATION, "Voulez-vous vraiment supprimer le trajet " + s + "?");
-                    conf.showAndWait();
-                    if (conf.getResult() == ButtonType.OK) {
-                        presenter.deleteFav(s);
-                    }
-                } catch (RepositoryException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
+            use.setOnAction(e -> presenter.useFavorite(s));
+            update.setOnAction(e -> presenter.modifyFavorite(s));
+            delete.setOnAction(e -> presenter.deleteFavorite(s));
 
             ret.getItems().addAll(use, update, delete);
             return ret;
         }).toList());
-    }
-
-    public void modifySave(Presenter presenter, String name) {
-        Dialog<FavoriteDto> dialog = new Dialog<>();
-        dialog.setTitle("Modification du trajet " + name);
-
-        // TODO : create a new FXML dialog and like put everything in it.
-
     }
 
     /**
@@ -195,30 +260,9 @@ public class MainView {
      */
     private class SaveButtonHandler implements EventHandler<ActionEvent> {
         private final Presenter presenter;
-        private final TextInputDialog saveDialog;
 
         public SaveButtonHandler(Presenter presenter) {
             this.presenter = presenter;
-            this.saveDialog = new TextInputDialog();
-            saveDialog.setTitle("Sauvegarde de l'itinéraire");
-            final Button confirmed = (Button) saveDialog.getDialogPane().lookupButton(ButtonType.OK);
-            confirmed.addEventFilter(ActionEvent.ACTION, event -> {
-                if (saveDialog.getEditor().getCharacters().isEmpty()) {
-                    event.consume(); // we don't accept empty station names ofc
-                }
-            });
-        }
-
-        /**
-         * Gets the name of that trip.
-         *
-         * @param start the starting station's name
-         * @param end   the final station's name
-         * @return the trip's name
-         */
-        private String getFavName(String start, String end) {
-            saveDialog.setContentText("Quel est le nom de l'itinéraire " + start + " -- " + end);
-            return saveDialog.showAndWait().orElse(null);
         }
 
         @Override
@@ -226,19 +270,7 @@ public class MainView {
             String start = source.getValue();
             String end = destination.getValue();
 
-            if (start == null || end == null) { // don't show the modal if there's nothing to work with
-                actionEvent.consume();
-                return;
-            }
-
-            String name = getFavName(start, end);
-            if (name == null) return;
-
-            try {
-                presenter.savePath(start, end, name);
-            } catch (RepositoryException e) {
-                throw new RuntimeException(e);
-            }
+            presenter.newFavorite(start, end);
         }
     }
 }

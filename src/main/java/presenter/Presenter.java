@@ -8,7 +8,9 @@ import util.Observer;
 import util.Update;
 import view.MainView;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Presenter implements Observer {
 
@@ -43,10 +45,16 @@ public class Presenter implements Observer {
     }
 
     /**
-     * @param source
-     * @param dest
+     * Starts a best path search from one station to another.
+     *
+     * @param source the beginning of the path
+     * @param dest   the path's end
      */
     public void findPath(String source, String dest) {
+        if (source == null || dest == null) {
+            MainView.showError("Entrez deux stations valides.");
+            return;
+        }
         model.getPath(source, dest);
     }
 
@@ -59,11 +67,6 @@ public class Presenter implements Observer {
                 case SEARCH_RESULT -> view.showResult((List<Node>) up.arg());
                 // we have a new favorite -> we need to add it to the list
                 case NEW_FAVORITE -> view.updateFavorite(this, (List<String>) up.arg());
-                // we fetched info from a favorite -> we need to put that info at the correct place
-                case FAV_FETCH -> { // probably unused
-                    String[] obj = (String[]) up.arg();
-                    view.executeFavorite(obj[0], obj[1]);
-                }
             }
         } catch (ClassCastException e) {
             System.err.println("that's not normal");
@@ -71,35 +74,75 @@ public class Presenter implements Observer {
 
     }
 
-    /**
-     * Save a given path as a favorite trip.
-     *
-     * @param start       the starting station's name
-     * @param destination the final station's name
-     * @param name        the trip's name
-     * @throws RepositoryException database problem
-     */
-    public void savePath(String start, String destination, String name) throws RepositoryException {
-        model.savePath(start, destination, name);
+    public void useFavorite(String name) {
+        String[] favorite = fetchFavorite(name);
+        view.executeFavorite(favorite[0], favorite[1]);
     }
 
     /**
-     * Fetches the
+     * Fetches the path from a favorite's name.
      *
-     * @param text
-     * @return
-     * @throws RepositoryException
+     * @param name the favorite path's name
+     * @return its corresponding path
      */
-    public String[] fetchSave(String text) throws RepositoryException {
-        return model.fetchSave(text);
+    public String[] fetchFavorite(String name) {
+        String[] save = model.fetchSave(name);
+        if (save == null) {
+            MainView.showError("Cet itinéraire n'existe plus. Redémarrez le logiciel.");
+        }
+
+        return save;
     }
 
     /**
      * Deletes a favorite from the model.
      *
-     * @param fav the favorite trip's name
+     * @param name the favorite trip's name
      */
-    public void deleteFav(String fav) throws RepositoryException {
-        model.deleteFav(fav);
+    public void deleteFavorite(String name) throws RepositoryException {
+        if (MainView.showConfirm("Voulez-vous vraiment supprimer le trajet " + name + "?")) {
+            model.deleteFavorite(name);
+            MainView.showSucceed("Itinéraire supprimé!");
+        }
+    }
+
+    /**
+     * Save a given path as a favorite trip.
+     *
+     * @param start the starting station's name
+     * @param end   the final station's name
+     */
+    public void newFavorite(String start, String end) {
+        if (start == null || end == null) {
+            MainView.showError("Entrez deux stations valides.");
+            return;
+        }
+
+        String name = MainView.askText("Sauvegarde de l'itinéraire",
+                "Quel nom voulez-vous donner à l'itinéraire " + start + " — " + end + " ?");
+        if (name == null || name.isBlank()) {
+            MainView.showError("Entrez un nom pour ce trajet.");
+            return;
+        }
+
+        model.savePath(start, end, name);
+        MainView.showSucceed("Itinéraire ajouté !");
+    }
+
+    public void modifyFavorite(String name) {
+        String[] save = model.fetchSave(name);
+        if (save == null) {
+            MainView.showError("Cet itinéraire n'existe plus. Redémarrez le logiciel.");
+            return;
+        }
+
+        String[] newFav = view.showFavoriteEditDialog(name, save[0], save[1]);
+        if(newFav == null || Arrays.stream(newFav).anyMatch(Objects::isNull)) {
+            MainView.showError("Veuillez remplir tous les champs.");
+            return;
+        }
+
+        model.deleteFavorite(name);
+        model.savePath(newFav[0], newFav[1], newFav[2]);
     }
 }
