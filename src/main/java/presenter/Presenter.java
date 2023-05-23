@@ -52,7 +52,7 @@ public class Presenter implements Observer {
      */
     public void findPath(String source, String dest) {
         if (source == null || dest == null) {
-            MainView.showError("Entrez deux stations valides.");
+            view.showError("Entrez deux stations valides.");
             return;
         }
         model.getPath(source, dest);
@@ -88,7 +88,7 @@ public class Presenter implements Observer {
     public String[] fetchFavorite(String name) {
         String[] save = model.fetchSave(name);
         if (save == null) {
-            MainView.showError("Cet itinéraire n'existe plus. Redémarrez le logiciel.");
+            view.showError("Cet itinéraire n'existe plus. Redémarrez le logiciel.");
         }
 
         return save;
@@ -100,9 +100,9 @@ public class Presenter implements Observer {
      * @param name the favorite trip's name
      */
     public void deleteFavorite(String name) throws RepositoryException {
-        if (MainView.showConfirm("Voulez-vous vraiment supprimer le trajet " + name + "?")) {
+        if (view.showConfirm("Voulez-vous vraiment supprimer le trajet " + name + "?")) {
             model.deleteFavorite(name);
-            MainView.showSucceed("Itinéraire supprimé!");
+            view.showSucceed("Itinéraire supprimé!");
         }
     }
 
@@ -114,35 +114,42 @@ public class Presenter implements Observer {
      */
     public void newFavorite(String start, String end) {
         if (start == null || end == null) {
-            MainView.showError("Entrez deux stations valides.");
+            view.showError("Entrez deux stations valides.");
             return;
         }
 
-        String name = MainView.askText("Sauvegarde de l'itinéraire",
+        String name = view.askText("Sauvegarde de l'itinéraire",
                 "Quel nom voulez-vous donner à l'itinéraire " + start + " — " + end + " ?");
         if (name == null || name.isBlank()) {
-            MainView.showError("Entrez un nom pour ce trajet.");
+            view.showError("Entrez un nom pour ce trajet.");
             return;
         }
 
         model.savePath(start, end, name);
-        MainView.showSucceed("Itinéraire ajouté !");
+        view.showSucceed("Itinéraire ajouté !");
     }
 
     public void modifyFavorite(String name) {
         String[] save = model.fetchSave(name);
         if (save == null) {
-            MainView.showError("Cet itinéraire n'existe plus. Redémarrez le logiciel.");
+            view.showError("Cet itinéraire n'existe plus. Redémarrez le logiciel.");
             return;
         }
 
-        String[] newFav = view.showFavoriteEditDialog(name, save[0], save[1]);
-        if(newFav == null || Arrays.stream(newFav).anyMatch(Objects::isNull)) {
-            MainView.showError("Veuillez remplir tous les champs.");
+        try {
+            save = view.showFavoriteEditDialog(name, save[0], save[1]);
+        } catch (IllegalArgumentException e) {
+            view.showError("Oups! Cet itinéraire contient des arrêts inconnus. Ce n'est pas censé arriver, vous" +
+                    "devriez supprimer cet itinéraire :/");
             return;
         }
-
+        if (save == null) return;
+        if (Arrays.stream(save).anyMatch(Objects::isNull) || Arrays.stream(save).anyMatch(String::isBlank)) {
+            view.showError("Veuillez remplir tous les champs.");
+            return;
+        }
         model.deleteFavorite(name);
-        model.savePath(newFav[0], newFav[1], newFav[2]);
+        model.savePath(save[1], save[2], save[0]);
+        view.showSucceed("Itinéraire modifié!");
     }
 }

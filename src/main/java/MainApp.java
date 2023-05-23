@@ -20,6 +20,8 @@ public class MainApp extends Application {
         Parent root = fxml.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("StibRide");
+        stage.setResizable(false);
 
         // 2. get the created controller to pass it to presenter
         MainView view = fxml.getController();

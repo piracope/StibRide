@@ -1,16 +1,11 @@
 package view;
 
-import data.dto.FavoriteDto;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Window;
 import model.Node;
 import org.controlsfx.control.SearchableComboBox;
 import presenter.Presenter;
@@ -53,7 +48,7 @@ public class MainView {
      *
      * @param errorMsg the message to show the user
      */
-    public static void showError(String errorMsg) {
+    public void showError(String errorMsg) {
         Alert error = new Alert(Alert.AlertType.ERROR, errorMsg);
         error.setTitle("Erreur");
         error.setHeaderText("Erreur");
@@ -69,7 +64,7 @@ public class MainView {
      * @param prompt the prompt to show the user
      * @return the text input by the user, or null if none was present
      */
-    public static String askText(String title, String prompt) {
+    public String askText(String title, String prompt) {
         // setup content
         var dialog = new TextInputDialog();
         dialog.setContentText(prompt);
@@ -91,50 +86,20 @@ public class MainView {
      * @param prompt the prompt to show the user
      * @return true if they pressed OK
      */
-    public static boolean showConfirm(String prompt) {
+    public boolean showConfirm(String prompt) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, prompt);
         confirm.showAndWait();
         return confirm.getResult() == ButtonType.OK;
     }
 
-    public static void showSucceed(String text) {
+    public void showSucceed(String text) {
         Alert yipee = new Alert(Alert.AlertType.INFORMATION, text);
         yipee.showAndWait();
     }
 
     public String[] showFavoriteEditDialog(String name, String start, String end) {
-
-        GridPane root = new GridPane();
-
-        TextField nameFld = new TextField(name);
-        SearchableComboBox<String> sourceCopy = new SearchableComboBox<>(source.getItems());
-        sourceCopy.setValue(start);
-        SearchableComboBox<String> destCopy = new SearchableComboBox<>(destination.getItems());
-        destCopy.setValue(end);
-
-        Button ok = new Button("Modifier");
-        Button cancel = new Button("Annuler");
-
-        root.add(new Label("Nom : "), 0, 0);
-        root.add(nameFld, 1, 0);
-        root.add(new Label("Départ"), 0, 1);
-        root.add(sourceCopy, 1, 1);
-        root.add(new Label("Destination"), 0, 2);
-        root.add(destCopy, 1, 2);
-        root.add(ok, 0, 3);
-        root.add(cancel, 1, 3);
-
-        Dialog<String[]> dialog = new Dialog<>();
-        dialog.setTitle("Modification de l'itinéraire " + name);
-        dialog.getDialogPane().setContent(root);
-
-        ok.setOnAction(e -> {
-            e.consume();
-            dialog.setResult(new String[]{nameFld.getText(), sourceCopy.getValue(), destCopy.getValue()});
-        });
-
-        Window window = dialog.getDialogPane().getScene().getWindow();
-        window.setOnCloseRequest(event -> window.hide());
+        var dialog = new EditFavoriteDialogContent(source, destination);
+        dialog.fillValues(name, start, end);
 
         return dialog.showAndWait().orElse(null);
     }
