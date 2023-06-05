@@ -1,26 +1,35 @@
 package data.jdbc;
 
 import data.config.ConfigManager;
-import data.dto.StationsDto;
+import data.dto.FavoriteDto;
 import data.exception.RepositoryException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StationsDaoTest {
+class FavoriteDaoTest {
+    private static final String KEY = "TEST";
 
-    private static final int KEY = 8312;
-    private final StationsDto PDN;
-    private StationsDao instance;
+    private final FavoriteDto TEST;
+    private final FavoriteDto TEST2;
+    private final List<FavoriteDto> all;
+    private FavoriteDao instance;
 
-    public StationsDaoTest() {
-        PDN = new StationsDto(8312, "PORTE DE NAMUR");
+    public FavoriteDaoTest() {
+        TEST = new FavoriteDto(8312, 8142, "TEST");
+        TEST2 = new FavoriteDto(8302, 8472, "TEST2");
+
+        all = new ArrayList<>();
+        all.add(TEST);
+        all.add(TEST2);
 
         try {
             ConfigManager.getInstance().load();
-            instance = StationsDao.getInstance();
+            instance = FavoriteDao.getInstance();
         } catch (RepositoryException e) {
             fail("Impossible de se connecter à la base de donner " + e);
         } catch (IOException e) {
@@ -32,9 +41,9 @@ class StationsDaoTest {
     public void testSelectExist() throws Exception {
         System.out.println("testSelectExist");
         //Arrange
-        StationsDto expected = PDN;
+        FavoriteDto expected = TEST;
         //Action
-        StationsDto result = instance.select(KEY);
+        FavoriteDto result = instance.select(KEY);
         //Assert
         assertEquals(expected, result);
     }
@@ -44,7 +53,7 @@ class StationsDaoTest {
         System.out.println("testSelectNotExist");
         //Arrange
         //Action
-        StationsDto result = instance.select(9999);
+        FavoriteDto result = instance.select("non");
         //Assert
         assertNull(result);
     }
@@ -53,7 +62,7 @@ class StationsDaoTest {
     public void testSelectIncorrectParameter() throws Exception {
         System.out.println("testSelectIncorrectParameter");
         //Arrange
-        Integer incorrect = null;
+        String incorrect = null;
         //Assert
         assertThrows(RepositoryException.class, () -> {
             //Action
@@ -61,8 +70,14 @@ class StationsDaoTest {
         });
     }
 
-    /*
-    NOTE :
-    Je pourrais écrire les tests unitaires des autres DAO mais ils seront très si
-     */
+    @Test
+    public void testInsertCorrect() {
+        System.out.println("testInsertCorrect");
+        String key = "BONJOUR";
+        FavoriteDto expectedDto = new FavoriteDto(8122, 8372, "BONJOUR");
+        instance.insert(expectedDto);
+        //assertEquals(expected, result);
+        assertEquals(expectedDto, instance.select(key));
+    }
+
 }

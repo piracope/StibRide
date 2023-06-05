@@ -12,34 +12,67 @@ import presenter.Presenter;
 
 import java.util.List;
 
+/**
+ * The main window displayed.
+ */
 public class MainView {
 
+    /**
+     * The submenu handling favorite trips, under "Edit"
+     */
     @FXML
     public Menu favoriteMenu;
+    /**
+     * The "About" menu-item, under "Help". Shows a short message about the program and its author.
+     */
     @FXML
     private MenuItem aboutItem;
 
+    /**
+     * The search bar for the destination station
+     */
     @FXML
     private SearchableComboBox<String> destination;
 
+    /**
+     * The "Quit" menu-item, under "File". Quits the program.
+     */
     @FXML
     private MenuItem quitItem;
 
+    /**
+     * The search bar for the beginning station
+     */
     @FXML
     private SearchableComboBox<String> source;
 
+    /**
+     * The button that will start the best path search.
+     */
     @FXML
     private Button startButton;
 
+    /**
+     * The table that will show the shortest path between the two selected stations.
+     */
     @FXML
     private TableView<Node> table;
 
+    /**
+     * The column from the result table that will show the lines that pass at one station
+     */
     @FXML
     private TableColumn<Node, List<Integer>> linesCol;
 
+    /**
+     * The column from the result table that will show the station's name.
+     */
     @FXML
     private TableColumn<Node, String> stationsCol;
 
+    /**
+     * The button that will create a new favorite trip.
+     */
     @FXML
     private Button favButton;
 
@@ -92,11 +125,24 @@ public class MainView {
         return confirm.getResult() == ButtonType.OK;
     }
 
+    /**
+     * Shows a success dialog, confirming that all went well.
+     *
+     * @param text the success text to show the user
+     */
     public void showSucceed(String text) {
         Alert yipee = new Alert(Alert.AlertType.INFORMATION, text);
         yipee.showAndWait();
     }
 
+    /**
+     * Shows the dialog for editing a given favorite trip.
+     *
+     * @param name  the trip's name
+     * @param start the trip's current starting station
+     * @param end   the trip's current ending station
+     * @return the new favorite trip, or null if it didn't work
+     */
     public String[] showFavoriteEditDialog(String name, String start, String end) {
         var dialog = new EditFavoriteDialogContent(source, destination);
         dialog.fillValues(name, start, end);

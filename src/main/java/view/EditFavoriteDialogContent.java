@@ -11,15 +11,42 @@ import org.controlsfx.control.SearchableComboBox;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * The content of the favorite trip editing window/dialog.
+ */
 public class EditFavoriteDialogContent extends Dialog<String[]> {
+    /**
+     * The window's DialogPane's root.
+     */
     private final GridPane root;
+    /**
+     * The trip's name.
+     */
     private final TextField name;
+    /**
+     * A search bar for the beginning station.
+     */
     private final SearchableComboBox<String> source;
+    /**
+     * A search bar for the ending station.
+     */
     private final SearchableComboBox<String> destination;
+    /**
+     * The confirmation button.
+     */
     private final Button ok;
+    /**
+     * The cancellation button.
+     */
     private final Button cancel;
 
 
+    /**
+     * Creates the content for a favorite trip editing dialog.
+     *
+     * @param source      the search bar containing all values possible for the starting station
+     * @param destination the search bar containing all values possible for the ending station
+     */
     public EditFavoriteDialogContent(SearchableComboBox<String> source, SearchableComboBox<String> destination) {
         super();
         this.root = new GridPane();
@@ -33,6 +60,14 @@ public class EditFavoriteDialogContent extends Dialog<String[]> {
         setupHandlers();
     }
 
+    /**
+     * Sets up the handlers for the buttons.
+     * <p>
+     * Pressing OK does nothing until all values are in a valid state (are present). It will then return
+     * a String[] containing the trip's information.
+     * <p>
+     * Pressing Cancel or the X (window closing button) will abruptly close the window.
+     */
     private void setupHandlers() {
         Window window = this.getDialogPane().getScene().getWindow();
 
@@ -49,6 +84,9 @@ public class EditFavoriteDialogContent extends Dialog<String[]> {
         window.setOnCloseRequest(event -> window.hide());
     }
 
+    /**
+     * Sets up the layout of this dialog.
+     */
     private void setupLayout() {
         this.setTitle("Modification de l'itinéraire");
         this.getDialogPane().setContent(root);
@@ -66,6 +104,13 @@ public class EditFavoriteDialogContent extends Dialog<String[]> {
         root.add(cancel, 1, 3);
     }
 
+    /**
+     * Puts the asked values in their place in this dialog.
+     *
+     * @param name  the trip's current name
+     * @param start the trip's current starting station
+     * @param end   the trip's current ending station
+     */
     public void fillValues(String name, String start, String end) {
         if (source.getItems().stream().noneMatch(s -> s.equals(start)) || destination.getItems().stream().noneMatch(s -> s.equals(end))) {
             throw new IllegalArgumentException("Unknown stations!");

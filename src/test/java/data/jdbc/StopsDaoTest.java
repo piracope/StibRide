@@ -1,7 +1,8 @@
 package data.jdbc;
 
 import data.config.ConfigManager;
-import data.dto.StationsDto;
+import data.dto.StopId;
+import data.dto.StopsDto;
 import data.exception.RepositoryException;
 import org.junit.jupiter.api.Test;
 
@@ -9,18 +10,16 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StationsDaoTest {
+class StopsDaoTest {
+    private static final StopId KEY = new StopId(2, 8312);
+    private final StopsDto PDN;
+    private StopsDao instance;
 
-    private static final int KEY = 8312;
-    private final StationsDto PDN;
-    private StationsDao instance;
-
-    public StationsDaoTest() {
-        PDN = new StationsDto(8312, "PORTE DE NAMUR");
-
+    public StopsDaoTest() {
+        PDN = new StopsDto(2, 8312, 11);
         try {
             ConfigManager.getInstance().load();
-            instance = StationsDao.getInstance();
+            instance = StopsDao.getInstance();
         } catch (RepositoryException e) {
             fail("Impossible de se connecter à la base de donner " + e);
         } catch (IOException e) {
@@ -32,9 +31,9 @@ class StationsDaoTest {
     public void testSelectExist() throws Exception {
         System.out.println("testSelectExist");
         //Arrange
-        StationsDto expected = PDN;
+        StopsDto expected = PDN;
         //Action
-        StationsDto result = instance.select(KEY);
+        StopsDto result = instance.select(KEY);
         //Assert
         assertEquals(expected, result);
     }
@@ -44,7 +43,7 @@ class StationsDaoTest {
         System.out.println("testSelectNotExist");
         //Arrange
         //Action
-        StationsDto result = instance.select(9999);
+        StopsDto result = instance.select(new StopId(99, 999));
         //Assert
         assertNull(result);
     }
@@ -53,16 +52,11 @@ class StationsDaoTest {
     public void testSelectIncorrectParameter() throws Exception {
         System.out.println("testSelectIncorrectParameter");
         //Arrange
-        Integer incorrect = null;
+        StopId incorrect = null;
         //Assert
         assertThrows(RepositoryException.class, () -> {
             //Action
             instance.select(incorrect);
         });
     }
-
-    /*
-    NOTE :
-    Je pourrais écrire les tests unitaires des autres DAO mais ils seront très si
-     */
 }

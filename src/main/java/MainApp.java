@@ -26,12 +26,16 @@ public class MainApp extends Application {
         // 2. get the created controller to pass it to presenter
         MainView view = fxml.getController();
 
-        ConfigManager.getInstance().load();
+        try {
+            ConfigManager.getInstance().load();
 
-        BestPathSearcher model = new BestPathSearcher();
-        Presenter presenter = new Presenter(model, view);
-        view.addButtonHandlers(presenter);
+            BestPathSearcher model = new BestPathSearcher();
+            Presenter presenter = new Presenter(model, view);
+            view.addButtonHandlers(presenter);
 
-        stage.show();
+            stage.show();
+        } catch (Exception e) {
+            view.showError(e.getMessage()); // in a last effort, at least show the exception
+        }
     }
 }
